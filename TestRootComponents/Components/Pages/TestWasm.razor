@@ -1,0 +1,31 @@
+﻿@page "/TestWasm"
+<h1 id="header"></h1>
+<p>If Title isn't set after a few seconds, force reload the page... its enhanced load that makes a mess, and not worth to make the proper workaround for this</p>
+<h3>This should fail</h3>
+<div id="test-from-js" style="display:contents"></div>
+<h3>This should work</h3>
+<div id="test-from-wasm" style="display:contents"></div>
+<TestRootComponents.Client.Components.EnableWasmRootComponents />
+<script>
+    async function testFromJS() {
+        if (!document.getElementById("wasm-rendering-is-ready")){
+        document.getElementById("header").innerHTML = "Server not ready";
+        setTimeout(testFromJS, 10);
+        return;
+        }
+        try {
+            await Blazor.rootComponents.add(document.getElementById('test-from-js'), 'test-server', {});
+        } catch (e) {
+            document.getElementById("test-from-js").innerHTML = "Error: " + e;
+        }
+        try {
+            await Blazor.rootComponents.add(document.getElementById('test-from-wasm'), 'test-wasm', {});
+        } catch (e) {
+            document.getElementById("test-from-wasm").innerHTML = "Error: " + e;
+        }
+    }
+ setTimeout(testFromJS, 10);
+</script>
+@code {
+ 
+}
